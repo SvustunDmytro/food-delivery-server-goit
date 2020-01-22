@@ -1,19 +1,6 @@
-const qs = require("querystring");
 const fs = require("fs");
-const path = require("path");
 
 const signUpRoute = (request, response) => {
-  response.writeHead(200, { "Content-Type": "text/html" });
-  if (request.method === "GET") {
-    const products = fs.readFile(
-      "./src/db/products/all-products.json",
-      "utf8",
-      (err, data) => {
-        console.log(data);
-      }
-    );
-  }
-  response.end();
   if (request.method === "POST") {
     let body = "";
     let successResponse = "";
@@ -25,7 +12,10 @@ const signUpRoute = (request, response) => {
       successResponse = { status: "success", post };
     });
     request.on("end", function() {
-      response.write(`${JSON.stringify(successResponse)}`);
+      if (body === true) {
+        response.writeHead(200, { "Content-Type": "application/json" });
+        response.write(`${JSON.stringify(successResponse)}`);
+      }
       response.end();
     });
   }

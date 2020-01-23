@@ -19,9 +19,9 @@ const allUsers = (request, response) => {
       const suchResult = parsedProducts.find(item => item.id === idNumber);
       const stringifyResult = JSON.stringify(suchResult);
       response.write(`${stringifyResult}`);
+      response.end();
     }
   }
-  response.end();
 
   if (request.method === "POST") {
     let body = "";
@@ -33,6 +33,7 @@ const allUsers = (request, response) => {
       parsedProducts.push(post);
       const newProducts = JSON.stringify(parsedProducts);
       fs.writeFileSync("./src/db/products/all-products.json", newProducts);
+      response.end();
     });
   }
 };

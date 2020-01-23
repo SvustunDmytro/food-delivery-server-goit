@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const allUsers = (request, response) => {
-  response.writeHead(200, { "Content-Type": "text/html" });
+  response.writeHead(200, { "Content-Type": "application/json" });
   const products = fs.readFileSync(
     "./src/db/products/all-products.json",
     "utf8",
@@ -10,8 +10,16 @@ const allUsers = (request, response) => {
       return data;
     }
   );
+  const parsedProducts = JSON.parse(products);
   if (request.method === "GET") {
-    response.write(`${products}`);
+    const lastIndex = request.url.lastIndexOf("/");
+    const idString = request.url.slice(lastIndex + 1).trim();
+    const idNumber = +idString;
+    if (!isNaN(idNumber)) {
+      const suchResult = parsedProducts.find(item => item.id === idNumber);
+      const stringifyResult = JSON.stringify(suchResult);
+      response.write(`${stringifyResult}`);
+    }
   }
   response.end();
 
@@ -22,7 +30,6 @@ const allUsers = (request, response) => {
     });
     request.on("end", function() {
       const post = JSON.parse(body);
-      const parsedProducts = JSON.parse(products);
       parsedProducts.push(post);
       const newProducts = JSON.stringify(parsedProducts);
       fs.writeFileSync("./src/db/products/all-products.json", newProducts);

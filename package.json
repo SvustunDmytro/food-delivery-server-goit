@@ -1,0 +1,17 @@
+{
+  "name": "homework-1",
+  "version": "1.7.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "debug": "node --inspect index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.4",
+    "qs": "^6.9.1"
+  }
+}

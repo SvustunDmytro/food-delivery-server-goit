@@ -1,6 +1,8 @@
 const fs = require("fs");
+const url = require("url");
+const qs = require("qs");
 
-const allUsers = (request, response) => {
+const allProducts = (request, response) => {
   response.writeHead(200, { "Content-Type": "application/json" });
   const products = fs.readFileSync(
     "./src/db/products/all-products.json",
@@ -23,6 +25,36 @@ const allUsers = (request, response) => {
     }
   }
 
+  if (request.method === "GET" && request.url.includes("ids")) {
+    const parsedUrl = url.parse(request.url);
+    const parsedQuery = qs.parse(parsedUrl.query);
+    const ids = parsedQuery.ids.split(",");
+    // for (let id of ids) {
+    //   const idNumber = +id;
+    //   const suchResult = parsedProducts.find(item => item.id === idNumber);
+    //   const message = "No matches";
+
+    //   if (suchResult) {
+    //     const stringifyResult = JSON.stringify(suchResult);
+    //     response.write(stringifyResult);
+    //   }
+    //   if (!suchResult) {
+    //     response.write(message);
+    //   }
+    // }
+    const a = ids.map(function(item) {
+      const idNumber = +item;
+      const suchResult = parsedProducts.find(item => item.id === idNumber);
+      if (!suchResult) {
+        return;
+      }
+      return suchResult;
+    });
+    const b = JSON.stringify(a);
+    response.write(b);
+    console.log(b);
+    response.end();
+  }
   if (request.method === "POST") {
     let body = "";
     request.on("data", function(data) {
@@ -38,4 +70,4 @@ const allUsers = (request, response) => {
   }
 };
 
-module.exports = allUsers;
+module.exports = allProducts;

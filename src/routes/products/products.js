@@ -13,6 +13,14 @@ const allProducts = (request, response) => {
     }
   );
   const parsedProducts = JSON.parse(products);
+  const parsedUrl = url.parse(request.url);
+  const parsedQuery = qs.parse(parsedUrl.query);
+
+  if (request.method === "GET" && request.url === "/products") {
+    response.write(`${products}`);
+    response.end();
+  }
+
   if (request.method === "GET") {
     const lastIndex = request.url.lastIndexOf("/");
     const idString = request.url.slice(lastIndex + 1).trim();
@@ -20,41 +28,45 @@ const allProducts = (request, response) => {
     if (!isNaN(idNumber)) {
       const suchResult = parsedProducts.find(item => item.id === idNumber);
       const stringifyResult = JSON.stringify(suchResult);
-      response.write(`${stringifyResult}`);
+      if (!suchResult) {
+        response.write(`${idNumber} не найден`);
+      } else {
+        response.write(`${stringifyResult}`);
+      }
       response.end();
     }
   }
 
   if (request.method === "GET" && request.url.includes("ids")) {
-    const parsedUrl = url.parse(request.url);
-    const parsedQuery = qs.parse(parsedUrl.query);
     const ids = parsedQuery.ids.split(",");
-    // for (let id of ids) {
-    //   const idNumber = +id;
-    //   const suchResult = parsedProducts.find(item => item.id === idNumber);
-    //   const message = "No matches";
-
-    //   if (suchResult) {
-    //     const stringifyResult = JSON.stringify(suchResult);
-    //     response.write(stringifyResult);
-    //   }
-    //   if (!suchResult) {
-    //     response.write(message);
-    //   }
-    // }
-    const a = ids.map(function(item) {
+    const suchResult = ids.map(function(item) {
       const idNumber = +item;
       const suchResult = parsedProducts.find(item => item.id === idNumber);
       if (!suchResult) {
-        return;
+        return `${idNumber} не найден`;
       }
       return suchResult;
     });
-    const b = JSON.stringify(a);
-    response.write(b);
-    console.log(b);
+    const strResult = JSON.stringify(suchResult);
+    response.write(strResult);
     response.end();
   }
+
+  if (request.method === "GET" && request.url.includes("category")) {
+    const clearCategory = parsedQuery.category.slice(
+      1,
+      parsedQuery.category.length - 1
+    );
+    const suchResult = parsedProducts.map(function(item) {
+      if (clearCategory === item.categories[0]) {
+        return item;
+      }
+    });
+    const strResult = JSON.stringify(suchResult);
+    response.write(strResult);
+    response.end();
+  }
+
   if (request.method === "POST") {
     let body = "";
     request.on("data", function(data) {

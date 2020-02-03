@@ -15,6 +15,14 @@ const allProducts = (request, response) => {
   const parsedProducts = JSON.parse(products);
   const parsedUrl = url.parse(request.url);
   const parsedQuery = qs.parse(parsedUrl.query);
+  const statusSuccess = {
+    status: "success",
+    products: []
+  };
+  const noMatches = {
+    status: "no products",
+    products: []
+  };
 
   if (request.method === "GET" && request.url === "/products") {
     response.write(`${products}`);
@@ -27,11 +35,14 @@ const allProducts = (request, response) => {
     const idNumber = +idString;
     if (!isNaN(idNumber)) {
       const suchResult = parsedProducts.find(item => item.id === idNumber);
-      const stringifyResult = JSON.stringify(suchResult);
+      console.log(suchResult);
       if (!suchResult) {
-        response.write(`${idNumber} не найден`);
+        const strResult = JSON.stringify(noMatches);
+        response.write(strResult);
       } else {
-        response.write(`${stringifyResult}`);
+        statusSuccess.products.push(suchResult);
+        const strResult = JSON.stringify(statusSuccess);
+        response.write(`${strResult}`);
       }
       response.end();
     }
@@ -39,15 +50,15 @@ const allProducts = (request, response) => {
 
   if (request.method === "GET" && request.url.includes("ids")) {
     const ids = parsedQuery.ids.split(",");
-    const suchResult = ids.map(function(item) {
+    ids.map(function(item) {
       const idNumber = +item;
       const suchResult = parsedProducts.find(item => item.id === idNumber);
       if (!suchResult) {
-        return `${idNumber} не найден`;
+        return statusSuccess.products.push(`${idNumber} не найден`);
       }
-      return suchResult;
+      return statusSuccess.products.push(suchResult);
     });
-    const strResult = JSON.stringify(suchResult);
+    const strResult = JSON.stringify(statusSuccess);
     response.write(strResult);
     response.end();
   }
@@ -59,11 +70,15 @@ const allProducts = (request, response) => {
     );
     const suchResult = parsedProducts.map(function(item) {
       if (clearCategory === item.categories[0]) {
-        return item;
+        return statusSuccess.products.push(item);
       }
     });
-    const strResult = JSON.stringify(suchResult);
-    response.write(strResult);
+    if (suchResult.includes(undefined)) {
+      response.write(JSON.stringify(noMatches));
+    } else {
+      const strResult = JSON.stringify(statusSuccess);
+      response.write(strResult);
+    }
     response.end();
   }
 

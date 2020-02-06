@@ -1,11 +1,30 @@
+const express = require("express");
 const mainRoute = require("./main/main");
-const signUpRoute = require("./users/sign-up-route");
-const products = require("./products/products");
+const getUser = require("./users/get-user");
+const createUser = require("./users/create-user");
+const path = require("path");
 
-const router = {
-  "/products": products,
-  "/signup": signUpRoute,
-  default: mainRoute
-};
+const apiRoutes = express.Router();
 
-module.exports = router;
+// const middlewareExample = (req, resp, next) => {
+//   if (!req.body.username) {
+//     next();
+//     return;
+//   }
+
+//   resp.status(400);
+//   resp.json({
+//     error: 'user has no "userName" field'
+//   });
+// };
+
+apiRoutes
+  .get("/", mainRoute)
+  .get("/users/:userId", getUser)
+
+  .post("/users", createUser)
+  .get("*", (req, res, next) => {
+    res.status(404).send("Route not exists");
+  });
+
+module.exports = apiRoutes;

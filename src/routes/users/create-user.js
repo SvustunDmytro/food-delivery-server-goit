@@ -17,9 +17,8 @@ const parsedUsers = JSON.parse(allUsers);
 const writeFile = util.promisify(fs.writeFile);
 
 const saveNewUser = data => {
-  const newUsers = Object.assign(parsedUsers, data);
-  const dataStr = JSON.stringify(newUsers);
-  console.log("console", newUsers);
+  parsedUsers.push(data);
+  const dataStr = JSON.stringify(parsedUsers);
 
   return writeFile(usersFolder, dataStr);
 };

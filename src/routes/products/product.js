@@ -15,11 +15,16 @@ const parsedProducts = JSON.parse(allProducts);
 const getProduct = (request, response) => {
   const id = request.params.productId;
   const searchResult = parsedProducts.find(item => item.id === Number(id));
-
+  let responseStatus;
+  if (searchResult) {
+    responseStatus = searchResult;
+  } else {
+    responseStatus = { status: "no products", products: [] };
+  }
   response.set("Content-Type", "application/json");
 
   response.status(200);
-  response.json({ user: searchResult });
+  response.json(responseStatus);
 };
 
 module.exports = getProduct;

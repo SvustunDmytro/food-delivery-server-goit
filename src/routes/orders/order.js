@@ -18,7 +18,6 @@ const writeFile = util.promisify(fs.writeFile);
 
 const saveNewOrder = (fileName, data) => {
   const src = path.resolve(usersFolder, fileName + ".json");
-  console.log(src);
   const dataStr = JSON.stringify(data);
 
   return writeFile(src, dataStr);
@@ -29,28 +28,40 @@ const createOrder = (request, response) => {
   const suchResult = order.products.map(function(item) {
     const idNumber = +item;
     const result = parsedProducts.find(item => item.id === idNumber);
-    if (!result) {
-      return `${idNumber} не найден`;
-    }
-    return idNumber;
+    if (result) return idNumber;
   });
   const orderData = { ...order, id: Date.now() };
   orderData.products = suchResult;
+  const filterArrId = suchResult.filter(function(item) {
+    if (item) {
+      return item;
+    }
+  });
 
-  const fileName = `${orderData.id}`;
-  console.log(productsFolder);
+  let responseStatus;
 
-  const sendResponse = () => {
-    response.json({
+  if (filterArrId.length === 0) {
+    responseStatus = {
+      status: "failed",
+      order: null
+    };
+  } else {
+    responseStatus = {
       status: "success",
       order: orderData
-    });
+    };
+  }
+
+  const fileName = `${orderData.id}`;
+
+  const sendResponse = () => {
+    response.json(responseStatus);
   };
 
   const sendError = () => {
     response.status(400);
     response.json({
-      error: "user was not saved"
+      error: "order was not saved"
     });
   };
 

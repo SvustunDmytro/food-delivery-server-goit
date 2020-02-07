@@ -16,11 +16,16 @@ const parsedUsers = JSON.parse(allUsers);
 const getUser = (request, response) => {
   const id = request.params.userId;
   const searchResult = parsedUsers.find(item => item.id === Number(id));
-
+  let responseStatus;
+  if (searchResult) {
+    responseStatus = searchResult;
+  } else {
+    responseStatus = { status: "not found" };
+  }
   response.set("Content-Type", "application/json");
 
   response.status(200);
-  response.json({ user: searchResult });
+  response.json(responseStatus);
 };
 
 module.exports = getUser;

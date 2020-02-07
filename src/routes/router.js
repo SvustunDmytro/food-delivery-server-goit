@@ -9,18 +9,6 @@ const path = require("path");
 
 const apiRoutes = express.Router();
 
-// const middlewareExample = (req, resp, next) => {
-//   if (!req.body.username) {
-//     next();
-//     return;
-//   }
-
-//   resp.status(400);
-//   resp.json({
-//     error: 'user has no "userName" field'
-//   });
-// };
-
 apiRoutes
   .get("/", mainRoute)
   .get("/users/:userId", getUser)
@@ -30,7 +18,6 @@ apiRoutes
   .post("/users", createUser)
   .post("/order", createOrder)
   .get("*", (req, res, next) => {
-    console.log(req.query);
     res.status(404).send("Route not exists");
   });
 

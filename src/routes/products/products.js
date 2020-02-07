@@ -14,24 +14,36 @@ const parsedProducts = JSON.parse(allProducts);
 
 const getProducts = (request, response) => {
   const ids = request.query.ids.split(",");
-  const statusSuccess = {
-    status: "success",
-    products: []
-  };
   const suchResult = ids.map(function(item) {
     const idNumber = +item;
     const result = parsedProducts.find(item => item.id === idNumber);
-    if (!result) {
-      return `${idNumber} не найден`;
-    }
-    return result;
+    if (result) return result;
   });
-  statusSuccess.products.push(suchResult);
+
+  const filterArrId = suchResult.filter(function(item) {
+    if (item) {
+      return item;
+    }
+  });
+
+  let responseStatus;
+
+  if (filterArrId.length === 0) {
+    responseStatus = {
+      status: "no products",
+      products: []
+    };
+  } else {
+    responseStatus = {
+      status: "success",
+      products: suchResult
+    };
+  }
 
   response.set("Content-Type", "application/json");
 
   response.status(200);
-  response.json({ user: statusSuccess });
+  response.json(responseStatus);
 };
 
 module.exports = getProducts;

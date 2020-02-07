@@ -7,7 +7,7 @@ const productsFolder = path.resolve(
   "../../",
   "db/products/all-products.json"
 );
-const usersFolder = path.resolve(__dirname, "../../", "db/users/orders");
+const ordersFolder = path.resolve(__dirname, "../../", "db/users/orders");
 const allProducts = fs.readFileSync(productsFolder, "utf8", (err, data) => {
   if (err) throw err;
   return data;
@@ -17,7 +17,7 @@ const parsedProducts = JSON.parse(allProducts);
 const writeFile = util.promisify(fs.writeFile);
 
 const saveNewOrder = (fileName, data) => {
-  const src = path.resolve(usersFolder, fileName + ".json");
+  const src = path.resolve(ordersFolder, fileName + ".json");
   const dataStr = JSON.stringify(data);
 
   return writeFile(src, dataStr);

@@ -20,7 +20,7 @@ const getProducts = (request, response) => {
     if (result) return result;
   });
 
-  const filterArrId = suchResult.filter(function(item) {
+  const filterArrProducts = suchResult.filter(function(item) {
     if (item) {
       return item;
     }
@@ -28,7 +28,7 @@ const getProducts = (request, response) => {
 
   let responseStatus;
 
-  if (filterArrId.length === 0) {
+  if (filterArrProducts.length === 0) {
     responseStatus = {
       status: "no products",
       products: []

@@ -1,13 +1,12 @@
 const path = require("path");
 const fs = require("fs");
 
-const readFileSync = fs.readFileSync;
 const usersFolder = path.resolve(
   __dirname,
   "../../",
   "db/users/all-users.json"
 );
-const allUsers = readFileSync(usersFolder, "utf8", (err, data) => {
+const allUsers = fs.readFileSync(usersFolder, "utf8", (err, data) => {
   if (err) throw err;
   return data;
 });

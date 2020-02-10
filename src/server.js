@@ -3,7 +3,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const app = require("./modules/app");
 const morgan = require("morgan");
-const router = require("./routes/router");
+const apiRoutes = require("./routes/router");
 
 const errorHandler = (err, req, res, next) => {
   res.status(500).send("Error found: " + err.stack);
@@ -17,7 +17,7 @@ const startServer = port => {
     .use(bodyParser.json())
     .use(morgan("dev"))
     .use(express.static(staticPath))
-    .use("/", router)
+    .use("/", apiRoutes)
     .use(errorHandler);
 
   app.listen(port);

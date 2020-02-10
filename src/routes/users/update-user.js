@@ -1,14 +1,8 @@
 const User = require("../../db/schemas/user");
-const bcrypt = require("bcrypt");
 
 const updateUser = (request, response) => {
   const user = request.body;
   const id = request.params.userId;
-
-  // if (user.password) {
-  //   user.password = bcrypt.hashSync(user.password, 10);
-  //   console.log("object", user.password);
-  // }
 
   const sendError = () => {
     response.status(400);
@@ -29,11 +23,7 @@ const updateUser = (request, response) => {
     });
   };
 
-  User.findOneAndUpdate(
-    { _id: id },
-    user,
-    { new: true } // вернуть обновленный документ
-  )
+  User.findOneAndUpdate({ _id: id }, user, { new: true })
     .then(sendResponse)
     .catch(sendError);
 };

@@ -4,11 +4,8 @@ const createOrder = (request, response) => {
   const order = request.body;
 
   const newOrder = new Order(order);
-  console.log(newOrder);
 
   const sendResponse = order => {
-    console.log(order);
-
     response.json({
       status: "success",
       order

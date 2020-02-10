@@ -1,7 +1,7 @@
 const User = require("../../db/schemas/user");
 const bcrypt = require("bcrypt");
 
-const createUsers = (request, response) => {
+const createUser = (request, response) => {
   const user = request.body;
 
   const hashedPassword = bcrypt.hashSync(user.password, 10);
@@ -10,8 +10,6 @@ const createUsers = (request, response) => {
   const newUser = new User(userData);
 
   const sendResponse = user => {
-    console.log(user);
-
     response.json({
       status: "success",
       user
@@ -31,4 +29,4 @@ const createUsers = (request, response) => {
     .catch(sendError);
 };
 
-module.exports = createUsers;
+module.exports = createUser;
